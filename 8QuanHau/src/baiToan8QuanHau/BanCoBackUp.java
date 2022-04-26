@@ -11,7 +11,6 @@ import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -30,28 +29,24 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JToggleButton;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.WindowConstants;
 
 import java.util.*;
 
-public class BanCo implements ActionListener{
+public class BanCoBackUp implements ActionListener{
 	
-	JFrame frame;
-	Scanner sc;
+	JFrame frame = new JFrame();
+	Scanner sc = new Scanner(System.in);
 //TITLE PANEL
-	JPanel titlePanel;
+	JPanel titlePanel = new JPanel();
 	JLabel titleText;
 //BUTTON PANEL
-	JPanel buttonPanel;
-	JButton[][] buttons;
+	JPanel buttonPanel = new JPanel();
+	JButton[][] buttons = new JButton[8][8];
 //OPTION PANEL
-	JPanel optionPanel;
-	JPanel optionPanel1;
-	JPanel optionPanel2;
-	JPanel optionPanel3;
+	JPanel optionPanel = new JPanel();
 	JComboBox colorCbb;
 	JComboBox iconCbb;
 	JButton clearButton;
@@ -59,7 +54,6 @@ public class BanCo implements ActionListener{
 	JButton autoSolve;
 	JButton nextButton;
 	JButton stopButton;
-	JToggleButton showPS;
 	JLabel psLabel;
 	
 //WELCOME PANEL
@@ -67,9 +61,6 @@ public class BanCo implements ActionListener{
 //MAIN PANEl
 	JPanel mainPanel = new JPanel();
 	JButton startButton;
-	JButton exitButton;
-	JButton normalMode;
-	JButton exploreMode;
 //CONTAINER PANEL
 	JPanel contPanel = new JPanel();
 //CARD LAYOUT
@@ -88,9 +79,6 @@ public class BanCo implements ActionListener{
 	ImageIcon queen = new ImageIcon("queen.png");
 	ImageIcon icon = queen;
 	
-	ImageIcon crown = new ImageIcon("crown.png");
-	ImageIcon crown0 = new ImageIcon("crown_0.png");
-	
 	Color blue = new Color(0x4b7399), green = new Color(0x769656);
 	Color brown = new Color(0xb58863);
 	
@@ -99,22 +87,24 @@ public class BanCo implements ActionListener{
 	Color mauTrang = new Color(0xeeeed2);
 	Color mauHoanThanh = new Color(0x329d27);
 	OKhongHopLe oKhongHopLe = new OKhongHopLe(); //Luu danh sach cac o khong hop le (dung de to mau)
+	
+	List<OCo> oKhongHopLe2 = new ArrayList<OCo>();
 	  
 	List<OCo> dsQuanHau = new ArrayList<OCo>();
 	int dapAn[][][] = new int[92][8][8];
 	
 	
-	public BanCo() {
-		frame = new JFrame();
-		sc  = new Scanner(System.in);
+	public BanCoBackUp() {
 		khoiTaoBanCo(banCo);
-		frame.setSize(770,680);
+		frame.setSize(800,680);
 		try {
 			getDapAn(banCo,0);
 		} catch (InterruptedException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		//inDapAn(dapAn);
+		
 		
 		//CREATE NEW FONT
 		Font customFont = null;
@@ -130,17 +120,8 @@ public class BanCo implements ActionListener{
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		ge.registerFont(customFont);
 		//================
-		Image crown_resize = crown.getImage();
-		crown_resize = crown_resize.getScaledInstance(45, 45, java.awt.Image.SCALE_SMOOTH);
-		crown = new ImageIcon(crown_resize);
-		
-		crown_resize = crown0.getImage();
-		crown_resize = crown_resize.getScaledInstance(45, 45, java.awt.Image.SCALE_SMOOTH);
-		crown0 = new ImageIcon(crown_resize);
-		//================
 				
 		//TITLE PANEL SETTING
-		titlePanel = new JPanel();
 		titlePanel.setLayout(new BorderLayout());
 		titlePanel.setBackground(Color.blue);
 		titlePanel.setPreferredSize(new Dimension(1,30));
@@ -150,15 +131,13 @@ public class BanCo implements ActionListener{
 		titleText.setForeground(Color.black);
 		titleText.setFont(new Font("Arial",Font.BOLD,15));
 		titleText.setHorizontalAlignment(JLabel.CENTER);
-		titleText.setText("Chọn một ô bất kỳ để bắt đầu!");
+		titleText.setText("Tro Choi 8 Quan Hau");
 		titleText.setOpaque(true);
 		
 		titlePanel.add(titleText);
 		//BUTTON PANEL SETTING
-		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new GridLayout(8,8));
 		buttonPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		buttons = new JButton[8][8];
 		for(int i=0;i<8;i++) {
 			for (int j=0;j<8;j++) {
 				buttons[i][j] = new JButton();
@@ -173,8 +152,7 @@ public class BanCo implements ActionListener{
 			}
 		}	
 		//OPTION PANEL SETTING
-		optionPanel = new JPanel();
-		optionPanel.setPreferredSize(new Dimension(120,1));
+		optionPanel.setPreferredSize(new Dimension(150,1));
 		optionPanel.setLayout(new FlowLayout(FlowLayout.LEADING,20,10));
 		clearButton = new JButton("Clear");
 		clearButton.setFocusable(false);
@@ -184,7 +162,7 @@ public class BanCo implements ActionListener{
 		clearButton.addActionListener(this);
 		
 		JLabel colorLabel = new JLabel("Board color:");
-		String[] color = {"Blue", "Green"};
+		String[] color = {"blue", "green"};
 		colorCbb = new JComboBox(color);
 		colorCbb.setBackground(mauBanCo);
 		colorCbb.setForeground(mauTrang);
@@ -214,26 +192,12 @@ public class BanCo implements ActionListener{
 		nextButton.setFocusable(false);
 		nextButton.setEnabled(false);
 		
-		JPanel PSPanel = new JPanel();
-		
-		showPS = new JToggleButton();
-		showPS.setIcon(crown0);
-		showPS.setPreferredSize(new Dimension(100,60));
-		showPS.setBackground(null);
-		showPS.setForeground(mauTrang);
-		showPS.setFocusable(false);
-		showPS.addActionListener(this);
-		showPS.setBorder(null);
-		showPS.setContentAreaFilled(false);
-		
-		
 		quitButton = new JButton("Quit");
 		quitButton.setPreferredSize(new Dimension(100,30));
 		quitButton.setBackground(mauDanhLoi);
 		quitButton.setForeground(mauTrang);
 		quitButton.setFocusable(false);
 		quitButton.addActionListener(this);
-		quitButton.setBounds(100, 100, 100, 30);
 		
 		stopButton = new JButton("Stop");
 		stopButton.setPreferredSize(new Dimension(100,30));
@@ -245,47 +209,19 @@ public class BanCo implements ActionListener{
 		
 		psLabel = new JLabel();
 		int temp_solution = checkSolution(banCo);
-		psLabel.setText(""+temp_solution);
-		psLabel.setFont(new Font("Arial",Font.BOLD,30));
-//		psLabel.setBorder(BorderFactory.createEmptyBorder(0, 33, 10, 0));
-	
-		psLabel.setHorizontalTextPosition(JLabel.CENTER);
-		psLabel.setVerticalTextPosition(JLabel.BOTTOM);
-		psLabel.setVisible(false);
+		psLabel.setText("Possible Solution: "+temp_solution);
 		
-		PSPanel.setLayout(new FlowLayout(FlowLayout.CENTER,10,10));
-		PSPanel.setPreferredSize(new Dimension(100,150));
-		PSPanel.add(showPS);
-		PSPanel.add(psLabel);
+		optionPanel.add(clearButton);
+		optionPanel.add(colorLabel);
+		optionPanel.add(colorCbb);
+		optionPanel.add(iconLabel);
+		optionPanel.add(iconCbb);
+		optionPanel.add(autoSolve);
+		optionPanel.add(nextButton);
+		optionPanel.add(stopButton);
+		optionPanel.add(quitButton);
+		optionPanel.add(psLabel);
 		
-		optionPanel.setLayout(new BorderLayout());
-		optionPanel1 = new JPanel();
-		optionPanel2 = new JPanel();
-		optionPanel3 = new JPanel();
-		optionPanel.add(optionPanel1,BorderLayout.NORTH);
-		optionPanel.add(optionPanel2,BorderLayout.CENTER);
-		optionPanel.add(optionPanel3,BorderLayout.SOUTH);
-
-//		optionPanel1.setBackground(Color.red);
-//		optionPanel2.setBackground(Color.green);
-//		optionPanel3.setBackground(Color.blue);
-		optionPanel1.setPreferredSize(new Dimension(1,200));
-		optionPanel1.setLayout(new FlowLayout(FlowLayout.LEFT,10,10));
-		optionPanel2.setLayout(new FlowLayout(FlowLayout.LEFT,10,10));
-		optionPanel3.setLayout(new FlowLayout(FlowLayout.LEFT,10,10));
-		
-		optionPanel1.add(clearButton);
-		optionPanel1.add(colorLabel);
-		optionPanel1.add(colorCbb);
-		optionPanel1.add(iconLabel);
-		optionPanel1.add(iconCbb);
-		
-		optionPanel2.add(autoSolve);
-		optionPanel2.add(nextButton);
-		optionPanel2.add(stopButton);
-		optionPanel2.add(PSPanel);
-		
-		optionPanel3.add(quitButton);
 		
 		//WELCOME PANEL SETTING
 		welcomePanel.setBackground(Color.yellow);
@@ -307,58 +243,10 @@ public class BanCo implements ActionListener{
 		startButton.setFont(customFont);
 		startButton.addActionListener(this);
 		
-		exitButton = new JButton("QUIT");
-		exitButton.setBackground(blue);
-		exitButton.setBorder(BorderFactory.createEmptyBorder());
-		exitButton.setOpaque(false);
-		exitButton.setFocusable(false);
-		exitButton.setPreferredSize(new Dimension(100,50));
-		exitButton.setForeground(Color.white);
-		exitButton.setFont(customFont);
-		exitButton.addActionListener(this);
-		
-		normalMode = new JButton("NORMAL MODE");
-		normalMode.setBackground(blue);
-		normalMode.setBorder(BorderFactory.createEmptyBorder());
-		normalMode.setOpaque(false);
-		normalMode.setFocusable(false);
-		normalMode.setPreferredSize(new Dimension(250,50));
-		normalMode.setForeground(Color.white);
-		normalMode.setFont(customFont);
-		normalMode.addActionListener(this);
-		
-		exploreMode = new JButton("EXPLORE MODE");
-		exploreMode.setBackground(blue);
-		exploreMode.setBorder(BorderFactory.createEmptyBorder());
-		exploreMode.setOpaque(false);
-		exploreMode.setFocusable(false);
-		exploreMode.setPreferredSize(new Dimension(250,50));
-		exploreMode.setForeground(Color.white);
-		exploreMode.setFont(customFont);
-		exploreMode.addActionListener(this);
-		
 		JPanel startOptionPanel = new JPanel();
-		startOptionPanel.setLayout(new GridLayout(2,1));
 		startOptionPanel.setBounds(0,450,800,100);
 		startOptionPanel.setOpaque(false);
-		
-		JPanel option1 = new JPanel();
-		JPanel option2 = new JPanel();
-		option1.setOpaque(false);
-		option2.setOpaque(false);
-		
-		option1.add(startButton);
-		option1.add(normalMode);
-		option2.add(exitButton);
-		option2.add(exploreMode);
-		normalMode.setVisible(false);
-		exploreMode.setVisible(false);
-		
-		startOptionPanel.add(option1);
-		startOptionPanel.add(option2);
-//		startOptionPanel.add(startButton);
-//		startOptionPanel.add(normalMode);
-//		startOptionPanel.add(exploreMode);
+		startOptionPanel.add(startButton);
 		bg.add(startOptionPanel);
 		
 		
@@ -382,10 +270,8 @@ public class BanCo implements ActionListener{
 		//FRAME SETTING
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.add(contPanel);
-		Image frameIcon = queen.getImage();
-		frameIcon = frameIcon.getScaledInstance(48, 48, java.awt.Image.SCALE_SMOOTH);
-		frame.setIconImage(frameIcon);
-		frame.setTitle("Trò Chơi 8 Quân Hậu");
+		frame.setIconImage(queen.getImage());
+		frame.setTitle("Tro Choi 8 Quan Hau");
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
@@ -408,7 +294,7 @@ public class BanCo implements ActionListener{
 				}
 		ToMau(banCo);
 		dsQuanHau.clear();
-		psLabel.setText(""+checkSolution(banCo));
+		psLabel.setText("Possible Solution: "+checkSolution(banCo));
 	}
 	public boolean HopLe(int banCo[][]) {
 		int sum=0;
@@ -685,8 +571,8 @@ public class BanCo implements ActionListener{
 	}
 	public Color getColor(String name) {
 		switch (name) {
-		case "Green": return green;
-		case "Blue" : return blue;
+		case "green": return green;
+		case "blue" : return blue;
 		default: return blue;
 		}
 	}
@@ -712,43 +598,22 @@ public class BanCo implements ActionListener{
 			System.out.println("");
 		}
 	}
-	public void nQueen(int banCo[][], int r) throws InterruptedException {
-		if (stop) return;
-		if (r==8) {
-			for (int i=0; i<8; i++) {
-				for (int j=0; j<8; j++)
-					if (banCo[i][j]==1) buttons[i][j].setBackground(mauHoanThanh);
-			}
-			solution++;
-			titleText.setText("Solution: "+solution+"");
-			nextButton.setEnabled(true);
-			while (!nextButton.getModel().isPressed()) {
-				if (stop) break;
-				Thread.sleep(1);
-			}
-			return;	
-		}
+	
+	
+	public void nQueen(int banCo[][], int r) {
+		if (r==8) return;	
 		for (int i=0; i<8; i++) {
 			if (isSafe(banCo,r,i)) {
 				banCo[r][i]=1;
-				if (!stop) buttons[r][i].setIcon(icon);
-				Thread.sleep(timer);
-								
 				nQueen(banCo,r+1);
-				nextButton.setEnabled(false);
-				for (int i1=0; i1<8; i1++)
-					for (int j=0; j<8; j++)
-						if (banCo[i1][j]==1) {
-							if ((i1+j)%2==0) buttons[i1][j].setBackground(mauTrang);
-							else buttons[i1][j].setBackground(mauBanCo);
-						}
 				banCo[r][i]=0;
 				buttons[r][i].setIcon(null);
-				Thread.sleep(timer);
 			}
 			
 		}
 	}
+	
+	
 	public void getDapAn(int banCo[][], int r) throws InterruptedException {
 		if (r==8) {
 			for (int i=0; i<8; i++) {
@@ -789,51 +654,14 @@ public class BanCo implements ActionListener{
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource()==startButton) {
-			startButton.setVisible(false);
-			exitButton.setVisible(false);
-			normalMode.setVisible(true);
-			exploreMode.setVisible(true);
-		}
-		if (e.getSource()==exitButton)
-			frame.dispose();
-		
-		if (e.getSource()==normalMode) {
-			optionPanel2.setVisible(false);
-			card.show(contPanel, "2");
-		}
-		if (e.getSource()==exploreMode) {
-			optionPanel2.setVisible(true);
-			card.show(contPanel, "2");
-		}
-			
-		
-		
-		if (e.getSource()==showPS) {
-			if (showPS.isSelected()) {
-				showPS.setIcon(crown);
-				psLabel.setVisible(true);
-			}
-			else {
-				showPS.setIcon(crown0);
-				psLabel.setVisible(false);
-			}
-		}
 		if (e.getSource()==stopButton) stop=true;
-		
+		if (e.getSource()==startButton) card.show(contPanel, "2");
 		if (e.getSource()==quitButton) {
 			clearBanCo(banCo);
 			if (auto_solving) stop=true;
-			startButton.setVisible(true);
-			exitButton.setVisible(true);
-			normalMode.setVisible(false);
-			exploreMode.setVisible(false);
 			card.show(contPanel, "1");
 		}
-		if (e.getSource()==clearButton) {
-			clearBanCo(banCo);
-			titleText.setText("Chọn một ô bất kỳ để bắt đầu!");
-		}
+		if (e.getSource()==clearButton) clearBanCo(banCo);
 		if (e.getSource()==autoSolve) {
 		  SwingWorker<Void, Void> worker = new SwingWorker<Void, Void>() {
 
@@ -847,7 +675,7 @@ public class BanCo implements ActionListener{
 					stopButton.setEnabled(true);
 					dsQuanHau.clear();
 					iconCbb.setEnabled(false);
-					psLabel.setText(""+checkSolution(banCo));
+					psLabel.setText("Possible Solution: "+checkSolution(banCo));
 					nQueen(banCo,0);
 					clearButton.setEnabled(true);
 					autoSolve.setEnabled(true);
@@ -855,7 +683,7 @@ public class BanCo implements ActionListener{
 					solution=0;
 					stop=false;
 					stopButton.setEnabled(false);
-					titleText.setText("Chọn một ô bất kỳ để bắt đầu!");
+					titleText.setText("Tro Choi 8 Quan Hau");
 					iconCbb.setEnabled(true);
 					
 					return null;
@@ -876,6 +704,7 @@ public class BanCo implements ActionListener{
 			} 
 			for (int i=0; i<dsQuanHau.size(); i++)
 				buttons[dsQuanHau.get(i).GetX()][dsQuanHau.get(i).GetY()].setIcon(icon);
+			System.out.println(iconCbb.getSelectedIndex());
 		}
 		if (!auto_solving) {
 			for (int i=0; i<8; i++)
@@ -890,16 +719,26 @@ public class BanCo implements ActionListener{
 //									System.out.println("YES");
 									dsQuanHau.remove(k);
 								}
-							psLabel.setText(""+checkSolution(banCo));
-							if (dsQuanHau.size()==0) titleText.setText("Chọn một ô bất kỳ để bắt đầu!");
+							psLabel.setText("Possible Solution: "+checkSolution(banCo));
+							
+//							print(banCo);
+//							System.out.println(checkSolution(banCo));
+//							for (int k=0; k<dsQuanHau.size();k++)
+//								System.out.print("["+dsQuanHau.get(k).GetX()+", "+dsQuanHau.get(k).GetY()+"] ");
+//							System.out.println();
 						}
 						else { //Day la mot thao tac danh co
-							titleText.setText("Trò chơi 8 quân hậu");
 							if (TongQuanHau(banCo)<8) {
 								banCo[i][j]=1;
 								buttons[i][j].setIcon(icon);
 								dsQuanHau.add((new OCo(i,j)));
-								psLabel.setText(""+checkSolution(banCo));
+								psLabel.setText("Possible Solution: "+checkSolution(banCo));
+//								print(banCo);
+								//System.out.println(checkSolution(banCo));
+//								for (int k=0; k<dsQuanHau.size();k++)
+//									System.out.print("["+dsQuanHau.get(k).GetX()+", "+dsQuanHau.get(k).GetY()+"] ");
+//								System.out.println();
+//								psLabel.setText("Possible: "+psSolution);
 							}
 						}
 					}
@@ -909,4 +748,3 @@ public class BanCo implements ActionListener{
 	}
 }
 //SOLUTION: 1-7-5-8-2-4-6-3
-

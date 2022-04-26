@@ -5,6 +5,9 @@ public class OCo {
 	public OCo() {
 		x=y=0;
 	}
+	public OCo(int i, int j) {
+		x=i; y=j;
+	}
 	public void Change(int i, int j) {
 		x=i; y=j;
 	}
@@ -13,6 +16,10 @@ public class OCo {
 	}
 	public int GetY() {
 		return y;
+	}
+	public boolean isEqual(OCo x2) {
+		if (x2.GetX()!=x || x2.GetY()!=y) return false;
+		return true;
 	}
 	
 
