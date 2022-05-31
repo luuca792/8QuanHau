@@ -112,7 +112,6 @@ public class BanCo implements ActionListener{
 		try {
 			getDapAn(banCo,0);
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
@@ -749,6 +748,7 @@ public class BanCo implements ActionListener{
 			
 		}
 	}
+	
 	public void getDapAn(int banCo[][], int r) throws InterruptedException {
 		if (r==8) {
 			for (int i=0; i<8; i++) {
@@ -767,18 +767,21 @@ public class BanCo implements ActionListener{
 			
 		}
 	}
+	
 	public int checkSolution(int banCo[][]) {
 		int solution=0;
 		boolean possible=true;
-		for (int k=0; k<92; k++) {//Duyet qua cac dap an
+		for (int k=0; k<92; k++) { //Duyệt qua các đáp án
 			possible = true;
-			//System.out.println(k);
-			for (int i=0; i<dsQuanHau.size(); i++)//Duyet qua cac quan hau tren ban co
-				if (dapAn[k][dsQuanHau.get(i).GetX()][dsQuanHau.get(i).GetY()]==0) possible=false;
+			//Duyệt qua các quân hậu trên bàn cờ
+			for (int i=0; i<dsQuanHau.size(); i++) 
+				if (dapAn[k][dsQuanHau.get(i).GetX()][dsQuanHau.get(i).GetY()]==0) 
+					possible=false;
 			if (possible) solution++;
 		}
 		return solution;
 	}
+	
 	public static void print(int bo[][]) {
 		for (int i=0; i<8; i++) {
 			for(int j=0; j<8; j++)
